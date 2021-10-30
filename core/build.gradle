@@ -1,8 +1,6 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-kapt'
-    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -10,28 +8,21 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.jogayed.currencyconverter"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "FIXER_API_KEY", FIXER_API_KEY)
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
-        debug {
-            buildConfigField "String", 'BASE_URL', "\"https://fixer.getsandbox.com/api/\""
-
-        }
         release {
             minifyEnabled false
-            buildConfigField "String", 'BASE_URL', "\"http://data.fixer.io/api/\""
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -40,6 +31,7 @@ android {
         jvmTarget = '1.8'
     }
 }
+
 dependencies {
     implementation "com.google.android.material:material:${versions.material_version}"
     implementation androidx.core_ktx
@@ -48,17 +40,12 @@ dependencies {
     androidTestImplementation androidx.test_espresso
     testImplementation "junit:junit:${versions.junit_version}"
 
-    //Hilt
-    implementation dagger_hilt.hilt_android
-    kapt dagger_hilt.hilt_compiler
+    //LifeCycle
+    implementation lifecycle.viewmodel_ktx
+    implementation lifecycle.runtime_ktx
 
-    //Retrofit
-    implementation retrofit2.retrofit
-    implementation retrofit2.converter_gson
+    //Coroutine
+    implementation coroutines.android
+    implementation coroutines.core
 
-    //Room
-    implementation room.room_runtime
-    implementation room.room_ktx
-    kapt room.room_compiler
 }
-
