@@ -39,14 +39,26 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 dependencies {
     implementation "com.google.android.material:material:${versions.material_version}"
     implementation androidx.core_ktx
     implementation androidx.appcompat
+    implementation androidx.constraintlayout
+//    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+//    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation lifecycle.livedata_ktx
     androidTestImplementation androidx.test_junit
     androidTestImplementation androidx.test_espresso
     testImplementation "junit:junit:${versions.junit_version}"
+
+    implementation project(path: ':core')
+    //LifeCycle
+    implementation lifecycle.viewmodel_ktx
+    implementation lifecycle.runtime_ktx
 
     //Hilt
     implementation dagger_hilt.hilt_android

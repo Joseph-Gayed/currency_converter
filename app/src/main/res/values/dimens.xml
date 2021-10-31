@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="splash_text_size">36sp</dimen>
+    <dimen name="slogan_text_size">18sp</dimen>
+    <dimen name="logo_size">150dp</dimen>
+    <dimen name="splash_margin">24dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="page_margin">16dp</dimen>
+
+    <dimen name="selected_item_amount_text_size">24sp</dimen>
+    <dimen name="selected_item_currency_text_size">16sp</dimen>
+
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/page_margin"
+    android:paddingTop="@dimen/page_margin"
+    android:background="@color/white"
+    android:paddingRight="@dimen/page_margin"
+    android:paddingBottom="@dimen/page_margin"
+    tools:context=".home.calculator.presentation.view.CalculatorFragment">
+
+    <!--Target rate-->
+    <include
+        android:id="@+id/view_target_currency"
+        layout="@layout/view_target_currency"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/edt_input_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/page_margin"
+        android:hint="@string/prompt_amount"
+        android:importantForAutofill="no"
+        android:layout_marginEnd="@dimen/text_margin"
+        android:inputType="numberDecimal"
+        android:maxLines="1"
+        android:imeOptions="actionDone"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toStartOf="@+id/tv_base_currency_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_target_currency" />
+
+    <TextView
+        android:id="@+id/tv_base_currency_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/text_margin"
+        android:textSize="@dimen/selected_item_currency_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/edt_input_amount"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_input_amount"
+        tools:text="EUR" />
+</androidx.constraintlayout.widget.ConstraintLayout>
