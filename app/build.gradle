@@ -27,7 +27,7 @@ android {
         }
         release {
             minifyEnabled false
-            buildConfigField "String", 'BASE_URL', "\"http://data.fixer.io/api/\""
+            buildConfigField "String", 'BASE_URL', "\"http://CurrencyRateRemoteDataModel.fixer.io/api/\""
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -42,23 +42,39 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
 }
 dependencies {
     implementation "com.google.android.material:material:${versions.material_version}"
     implementation androidx.core_ktx
     implementation androidx.appcompat
     implementation androidx.constraintlayout
-//    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-//    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation("androidx.cardview:cardview:1.0.0")
     implementation lifecycle.livedata_ktx
     androidTestImplementation androidx.test_junit
     androidTestImplementation androidx.test_espresso
     testImplementation "junit:junit:${versions.junit_version}"
 
+
     implementation project(path: ':core')
+
+    //Coroutine
+    implementation coroutines.android
+    implementation coroutines.core
+    implementation coroutines.test
+
     //LifeCycle
     implementation lifecycle.viewmodel_ktx
     implementation lifecycle.runtime_ktx
+    implementation lifecycle.extensions
+    implementation lifecycle.livedata_ktx
+
+    //androidx
+    implementation androidx.fragment_ktx
+    implementation androidx.swiperefreshlayout
 
     //Hilt
     implementation dagger_hilt.hilt_android
@@ -67,10 +83,14 @@ dependencies {
     //Retrofit
     implementation retrofit2.retrofit
     implementation retrofit2.converter_gson
+    implementation retrofit2.okhttp_logging_interceptor
 
     //Room
     implementation room.room_runtime
     implementation room.room_ktx
     kapt room.room_compiler
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
+
 }
 

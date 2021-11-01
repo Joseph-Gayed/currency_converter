@@ -4,6 +4,7 @@
     <color name="colorPrimary">#FF6200EE</color>
     <color name="colorPrimaryVariant">#FF3700B3</color>
     <color name="colorSecondary">#FF8CEE00</color>
+    <color name="colorOfWhite">#FFE6E6E6</color>
     <color name="colorSecondaryVariant">#C4FF6F</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

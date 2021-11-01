@@ -5,12 +5,14 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
     android:paddingLeft="@dimen/page_margin"
     android:paddingTop="@dimen/page_margin"
-    android:background="@color/white"
     android:paddingRight="@dimen/page_margin"
     android:paddingBottom="@dimen/page_margin"
-    tools:context=".home.calculator.presentation.view.CalculatorFragment">
+    tools:context=".home.calculator.presentation.view.CalculatorFragment"
+    android:focusable="true">
 
     <!--Target rate-->
     <include
@@ -28,12 +30,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/page_margin"
-        android:hint="@string/prompt_amount"
-        android:importantForAutofill="no"
         android:layout_marginEnd="@dimen/text_margin"
+        android:hint="@string/prompt_amount"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:maxLines="1"
-        android:imeOptions="actionDone"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toStartOf="@+id/tv_base_currency_name"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,8 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/text_margin"
         android:textSize="@dimen/selected_item_currency_text_size"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_input_amount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/edt_input_amount"
-        app:layout_constraintBottom_toBottomOf="@+id/edt_input_amount"
         tools:text="EUR" />
 </androidx.constraintlayout.widget.ConstraintLayout>

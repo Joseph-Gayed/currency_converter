@@ -1,5 +1,7 @@
 package com.jogayed.currencyconverter
 
+import com.jogayed.currencyconverter.app_core.ext.asMap
+import com.jogayed.currencyconverter.home.rates_list.data.remote.model.Rates
 import org.junit.Test
 
 import org.junit.Assert.*

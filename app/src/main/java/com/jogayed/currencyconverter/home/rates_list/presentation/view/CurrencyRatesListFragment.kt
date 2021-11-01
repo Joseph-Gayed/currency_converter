@@ -1,23 +1,51 @@
 package com.jogayed.currencyconverter.home.rates_list.presentation.view
 
 import android.content.Context
-import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.view.View
+import android.widget.TextView
+import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.jogayed.core.presentation.view.BaseFragment
+import com.jogayed.core.presentation.viewmodel.DataState
+import com.jogayed.core.presentation.viewmodel.isEmptyList
 import com.jogayed.currencyconverter.R
-import com.jogayed.currencyconverter.home.placeholder.PlaceholderContent
+import com.jogayed.currencyconverter.home.rates_list.presentation.model.CurrencyRateUiModel
+import com.jogayed.currencyconverter.home.rates_list.presentation.viewmodel.RatesViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 /**
  * A fragment representing a list of Items.
  */
+@AndroidEntryPoint
 class CurrencyRatesListFragment : BaseFragment() {
 
-    var itemClickListener: CurrencyItemClickListener? = null
+    private var itemClickListener: CurrencyItemClickListener? = null
+
+    private val viewModel: RatesViewModel by activityViewModels()
+
+    private lateinit var baseCurrencyView: View
+    private lateinit var tvBaseCurrencyRate: TextView
+    private lateinit var tvBaseCurrencyName: TextView
+
+
+    private lateinit var rvRates: RecyclerView
+    private lateinit var swipeRates: SwipeRefreshLayout
+    private lateinit var loadingView: View
+    private lateinit var errorView: View
+    private lateinit var emptyView: View
+    private lateinit var tvErrorMessage: TextView
+    private val ratesAdapter: CurrencyRatesListAdapter by lazy {
+        CurrencyRatesListAdapter { item ->
+            viewModel.selectedCurrencyRate = item
+            itemClickListener?.onCurrencyItemClicked()
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         itemClickListener = context as? CurrencyItemClickListener
@@ -29,17 +57,65 @@ class CurrencyRatesListFragment : BaseFragment() {
 
     override fun init() {
         super.init()
-        with(view as RecyclerView) {
+        initUi()
+        viewModel.getRates(false)
+    }
+
+    private fun initUi() {
+        baseCurrencyView = requireView().findViewById(R.id.view_base_currency)
+        tvBaseCurrencyRate = requireView().findViewById(R.id.tv_base_currency_rate)
+        tvBaseCurrencyName = requireView().findViewById(R.id.tv_base_currency_name)
+
+        loadingView = requireView().findViewById(R.id.view_loading)
+        errorView = requireView().findViewById(R.id.view_error)
+        emptyView = requireView().findViewById(R.id.view_no_data)
+        tvErrorMessage = requireView().findViewById(R.id.tv_error)
+
+        swipeRates = requireView().findViewById(R.id.swipe_rates)
+        swipeRates.setOnRefreshListener {
+            viewModel.refresh()
+        }
+        rvRates = requireView().findViewById(R.id.rv_rates)
+        with(rvRates) {
             layoutManager = LinearLayoutManager(context)
-            adapter = CurrencyRatesListAdapter(PlaceholderContent.ITEMS) { item ->
-                itemClickListener?.onCurrencyItemClicked(item)
+            adapter = ratesAdapter
+        }
+    }
+
+    override fun subscribe() {
+        super.subscribe()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.states.collect { state ->
+                handleDataState(state)
             }
         }
     }
 
+    private fun handleDataState(state: DataState<List<CurrencyRateUiModel>>) {
+        baseCurrencyView.isVisible = state is DataState.Success || state.data() != null
 
+        swipeRates.isRefreshing = state is DataState.Loading && state.data() != null
+        loadingView.isVisible = state is DataState.Loading && state.data() == null
+        errorView.isVisible = state is DataState.Error
+        emptyView.isVisible = state.isEmptyList()
+        if (state is DataState.Success)
+            handleSuccessState(state.data)
+        else if (state is DataState.Error) {
+            tvErrorMessage.text = state.throwable.message
+            state.throwable.printStackTrace()
+        }
+    }
+
+    private fun handleSuccessState(data: List<CurrencyRateUiModel>) {
+        if (data.isNotEmpty()) {
+            ratesAdapter.setData(data)
+            tvBaseCurrencyRate.text = viewModel.baseCurrencyRate?.rate.toString()
+            tvBaseCurrencyName.text = viewModel.baseCurrencyRate?.name.toString()
+
+        }
+    }
 
     interface CurrencyItemClickListener {
-        fun onCurrencyItemClicked(clickedItem: PlaceholderContent.PlaceholderItem)
+        fun onCurrencyItemClicked()
     }
 }

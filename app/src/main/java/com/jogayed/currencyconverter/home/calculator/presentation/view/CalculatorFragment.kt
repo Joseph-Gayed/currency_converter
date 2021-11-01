@@ -6,13 +6,29 @@ import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.jogayed.core.presentation.view.BaseFragment
 import com.jogayed.currencyconverter.R
-import com.jogayed.currencyconverter.home.placeholder.PlaceholderContent
+import com.jogayed.currencyconverter.home.calculator.domain.action.CalculationAction
+import com.jogayed.currencyconverter.home.calculator.domain.usecases.CalculationInputParams
+import com.jogayed.currencyconverter.home.calculator.domain.viewstate.CalculationViewState
+import com.jogayed.currencyconverter.home.calculator.presentation.viewmodel.CalculatorViewModel
+import com.jogayed.currencyconverter.home.rates_list.presentation.model.CurrencyRateUiModel
+import com.jogayed.currencyconverter.home.rates_list.presentation.viewmodel.RatesViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 
+@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class CalculatorFragment : BaseFragment() {
     override fun getLayoutResId() = R.layout.fragment_calculator
+
+    private val ratesViewModel: RatesViewModel by activityViewModels()
+    private val calculatorViewModel: CalculatorViewModel by viewModels()
+
 
     private lateinit var tvCalculatedAmount: TextView
     private lateinit var tvTargetCurrencyName: TextView
@@ -41,7 +57,7 @@ class CalculatorFragment : BaseFragment() {
         tvBaseCurrencyName = requireView().findViewById(R.id.tv_base_currency_name)
 
 
-        edtInputAmount.addTextChangedListener(inputAmountAfterTextChangedListener)
+
         edtInputAmount.setOnEditorActionListener { edtInputAmount, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 calculate(edtInputAmount.text.toString())
@@ -49,20 +65,65 @@ class CalculatorFragment : BaseFragment() {
             false
         }
 
+        showSelectedAndBaseRates()
+    }
+
+    private fun showSelectedAndBaseRates() {
+        ratesViewModel.selectedCurrencyRate?.let { selected ->
+            ratesViewModel.baseCurrencyRate?.let { base ->
+                showRates(
+                    selected,
+                    base
+                )
+            }
+        }
+    }
+
+    private fun showRates(
+        selectedRate: CurrencyRateUiModel,
+        baseRate: CurrencyRateUiModel
+    ) {
+        tvCalculatedAmount.text = selectedRate.rate.toString()
+        tvTargetCurrencyName.text = selectedRate.name
+        tvBaseCurrencyName.text = baseRate.name
+        edtInputAmount.setText(baseRate.rate.toString())
+        edtInputAmount.addTextChangedListener(inputAmountAfterTextChangedListener)
     }
 
     private fun calculate(inputAmountString: String) {
-        // TODO call viewModel.calculate(inputAmount)
         if (inputAmountString.isEmpty()) return
         val inputAmount = inputAmountString.toDouble()
-        Toast.makeText(requireContext(), "$inputAmount", Toast.LENGTH_SHORT).show()
+        ratesViewModel.selectedCurrencyRate?.rate?.let { targetRate ->
+            calculatorViewModel.executeAction(
+                CalculationAction.CalculateRate(
+                    CalculationInputParams(
+                        baseRate = ratesViewModel.baseCurrencyRate?.rate ?: 1.toDouble(),
+                        targetRate = targetRate,
+                        inputAmount = inputAmount
+                    )
+                )
+            )
+
+        }
+
+    }
+
+    override fun subscribe() {
+        super.subscribe()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            calculatorViewModel.viewStates.collect { viewState ->
+                if (viewState is CalculationViewState.SUCCESS) {
+                    tvCalculatedAmount.text = viewState.value.toString()
+                }
+            }
+        }
     }
 
     companion object {
         const val TAG = "CalculatorFragment"
 
         @JvmStatic
-        fun newInstance(targetCurrency: PlaceholderContent.PlaceholderItem) =
+        fun newInstance() =
             CalculatorFragment().apply {
                 arguments = Bundle().apply {
 

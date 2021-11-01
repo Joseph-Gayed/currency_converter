@@ -10,5 +10,6 @@
 
     <dimen name="selected_item_amount_text_size">24sp</dimen>
     <dimen name="selected_item_currency_text_size">16sp</dimen>
+    <dimen name="error_image_size">150dp</dimen>
 
 </resources>

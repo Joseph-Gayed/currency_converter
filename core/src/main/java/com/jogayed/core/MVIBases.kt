@@ -9,7 +9,7 @@ interface Action
  * Interface definition of the ViewStare(Model in MVI)
  */
 interface ViewState {
-    val initialState: ViewState
+    fun initialState(): ViewState
 }
 
 

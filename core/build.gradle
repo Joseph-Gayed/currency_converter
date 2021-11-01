@@ -43,9 +43,12 @@ dependencies {
     //LifeCycle
     implementation lifecycle.viewmodel_ktx
     implementation lifecycle.runtime_ktx
+    implementation lifecycle.extensions
+    implementation lifecycle.livedata_ktx
 
     //Coroutine
     implementation coroutines.android
     implementation coroutines.core
+    implementation coroutines.test
 
 }

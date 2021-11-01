@@ -2,5 +2,8 @@
     <string name="app_name">CurrCon</string>
     <string name="currency_converter">Currency Converter</string>
     <string name="prompt_amount">Amount</string>
+    <string name="general_error_message">Something went wrong, Please try again later.</string>
+    <string name="no_data">There  is nothing to show.</string>
+    <string name="base_rate">The Base Rate is </string>
 
 </resources>

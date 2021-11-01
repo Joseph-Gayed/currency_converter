@@ -2,7 +2,6 @@ package com.jogayed.core.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.jogayed.core.Action
-import com.jogayed.core.R
 import com.jogayed.core.Result
 import com.jogayed.core.ViewState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +31,7 @@ abstract class MVIBaseViewModel<VS : ViewState, A : Action, R : Result<VS>> : Ba
                 reduce(result)
             }
             .distinctUntilChanged()
-            .stateIn(viewModelScope, SharingStarted.Lazily,defaultInternalViewState.initialState as VS )
+            .stateIn(viewModelScope, SharingStarted.Lazily,defaultInternalViewState.initialState() as VS )
 
 
 
@@ -43,7 +42,7 @@ abstract class MVIBaseViewModel<VS : ViewState, A : Action, R : Result<VS>> : Ba
         }
     }
 
-    abstract fun handleAction(action: A): StateFlow<R>
+    abstract fun handleAction(action: A): Flow<R>
 
     val currentViewState: VS = viewStates.value
 

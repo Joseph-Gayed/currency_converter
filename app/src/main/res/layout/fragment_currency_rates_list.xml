@@ -1,13 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="com.jogayed.currencyconverter.home.CurrencyRatesListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/page_margin"
-    android:layout_marginRight="@dimen/page_margin"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".home.rates_list.presentation.view.CurrencyRatesListFragment"
-    tools:listitem="@layout/item_currency_rate" />
+    android:background="@color/white">
+
+
+    <!--base currency-->
+    <include
+        android:id="@+id/view_base_currency"
+        layout="@layout/view_base_currency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+
+    <!--rates list-->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_rates"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/page_margin"
+        android:layout_marginRight="@dimen/page_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_base_currency">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_rates"
+            android:name="com.jogayed.currencyconverter.home.CurrencyRatesListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".home.rates_list.presentation.view.CurrencyRatesListFragment"
+            tools:listitem="@layout/item_currency_rate"
+            tools:visibility="visible"
+            android:visibility="visible"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+    <!--loading-->
+    <include
+        android:id="@+id/view_loading"
+        layout="@layout/view_loading"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <!--error-->
+    <include
+        android:id="@+id/view_error"
+        layout="@layout/view_error"
+        android:visibility="gone"
+        tools:visibility="gone" />
+    <!--empty-->
+    <include
+        android:id="@+id/view_no_data"
+        layout="@layout/view_no_data"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

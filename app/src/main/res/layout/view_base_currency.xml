@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/page_margin"
+    app:cardPreventCornerOverlap="false"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorOfWhite"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_base_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/base_rate"
+            android:textSize="@dimen/selected_item_currency_text_size"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_base_currency_rate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_base_currency_rate"/>
+
+        <TextView
+            android:id="@+id/tv_base_currency_rate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/selected_item_amount_text_size"
+            android:gravity="end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_base_currency_name"
+            app:layout_constraintStart_toEndOf="@+id/tv_base_title"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1.00" />
+
+        <TextView
+            android:id="@+id/tv_base_currency_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/selected_item_currency_text_size"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_base_currency_rate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_base_currency_rate"
+            tools:text="USD" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height"
+            android:background="@color/black"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
