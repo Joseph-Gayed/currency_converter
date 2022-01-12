@@ -7,11 +7,12 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 /**
  * there will be 2 wrapper classes 1 for real code [MyCoroutineDispatchers]
  * and the other for unit testing
- * *
+ *
  */
 interface ICoroutineDispatchers {
     val io: CoroutineDispatcher
     val main: CoroutineDispatcher
+    val default: CoroutineDispatcher
 }
 
 /**
@@ -20,7 +21,8 @@ interface ICoroutineDispatchers {
  */
 class MyCoroutineDispatchers(
     override val io: CoroutineDispatcher = Dispatchers.IO,
-    override val main: CoroutineDispatcher = Dispatchers.Main
+    override val main: CoroutineDispatcher = Dispatchers.Main,
+    override val default: CoroutineDispatcher = Dispatchers.Default
 ) : ICoroutineDispatchers
 
 /**
@@ -29,5 +31,6 @@ class MyCoroutineDispatchers(
  */
 class MyTestCoroutineScopeDispatchers(
     override val io: CoroutineDispatcher,
-    override val main: CoroutineDispatcher
+    override val main: CoroutineDispatcher,
+    override val default: CoroutineDispatcher
 ) : ICoroutineDispatchers

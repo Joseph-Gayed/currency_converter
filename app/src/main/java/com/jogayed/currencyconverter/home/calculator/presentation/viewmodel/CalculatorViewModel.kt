@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
     val useCase: CalculateUseCase
-) : MVIBaseViewModel<CalculationViewState, CalculationAction, CalculationResult>() {
+) : MVIBaseViewModel<CalculationAction, CalculationResult, CalculationViewState>() {
     override val defaultInternalViewState: CalculationViewState
         get() = CalculationViewState.Idle
 

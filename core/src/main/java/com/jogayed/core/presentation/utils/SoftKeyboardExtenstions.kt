@@ -3,25 +3,43 @@ package com.jogayed.core.presentation.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.fragment.app.Fragment
 
-fun Activity.hideKeyboard() {
-    val view = this.currentFocus
-    if (view != null && view.windowToken != null) {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+
+fun Context.hideSoftKeyboard() {
+    val windowToken = when (this) {
+        is Fragment -> {
+            requireView().windowToken
+        }
+        is Activity -> {
+            currentFocus?.windowToken
+        }
+        else -> {
+            val baseContext = (this as ContextWrapper).baseContext
+            (baseContext as? Activity)?.currentFocus?.windowToken
+        }
     }
+
+    val inputManager: InputMethodManager =
+        getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(
+        windowToken,
+        InputMethodManager.HIDE_NOT_ALWAYS
+    )
 }
 
+
 @SuppressLint("ClickableViewAccessibility")
-fun Activity.hideKeyboardWhenClickingOut(view: View) {
+fun Context.hideKeyboardWhenClickingOut(view: View) {
     // Set up touch listener for non-text box views endDate hide keyboard.
     if (view !is EditText) {
         view.setOnTouchListener { _, _ ->
-            hideKeyboard()
+            hideSoftKeyboard()
             false
         }
     }
