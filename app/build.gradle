@@ -6,29 +6,50 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.jogayed.currencyconverter"
-        minSdkVersion 23
-        targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
-
+        minSdkVersion 24
+        targetSdkVersion 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "FIXER_API_KEY", FIXER_API_KEY)
+
+        //loop all configs and create a build config field for each config
+        rootProject.ext.projectConfigurations.each { p ->
+            if (p.key != 'VERSION_MAJOR' && p.key != 'VERSION_MAJOR' && p.key != 'VERSION_PATCH' && p.key != 'APPLICATION_ID') {
+                buildConfigField 'String', p.key, p.value
+            }
+        }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
         debug {
-            buildConfigField "String", 'BASE_URL', "\"https://fixer.getsandbox.com/api/\""
 
         }
         release {
             minifyEnabled false
-            buildConfigField "String", 'BASE_URL', "\"http://CurrencyRateRemoteDataModel.fixer.io/api/\""
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "default"
+
+    productFlavors {
+        [dev, prod].each {
+            it.applicationId projectConfigurations.getProperty("APPLICATION_ID").replace("\"", "")
+            it.versionCode computeVersionCode(versionMajor, versionMinor, versionPatch)
+            it.versionName computeVersionName(versionMajor, versionMinor, versionPatch)
+
+            //app name is inside the config file
+            if (projectConfigurations.containsKey("APP_NAME"))
+                it.manifestPlaceholders = [appLabel: projectConfigurations.getProperty("APP_NAME").replace("\"", "")]
+        }
+        prod {
+            manifestPlaceholders = [appLabel: "@string/app_name"]
         }
     }
 
@@ -36,15 +57,29 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
     buildFeatures {
         viewBinding true
     }
 
     packagingOptions {
+        resources {
+            excludes += ['META-INF/*']
+        }
+        jniLibs {
+            excludes += ['META-INF/*']
+        }
+
         resources.excludes.add("META-INF/*")
+    }
+
+    configurations {
+        devImplementation
+        prodImplementation
     }
 }
 dependencies {
