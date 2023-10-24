@@ -10,9 +10,9 @@ class RatesRemoteDataSource @Inject constructor(
     private val currencyRatesApi: CurrencyRatesApi,
     private val coroutineDispatcher: ICoroutineDispatchers
 ) : IRatesRemoteDataSource {
-    override suspend fun getLatestRates(): List<CurrencyRateRemoteDataModel> {
+    override suspend fun getLatestRates(baseRate: String): List<CurrencyRateRemoteDataModel> {
         return withContext(coroutineDispatcher.io) {
-            val response = currencyRatesApi.getLatestRates()
+            val response = currencyRatesApi.getLatestRates(base = baseRate)
             response.rates.asMap().map {
                 CurrencyRateRemoteDataModel(it.key, it.value as Double)
             }

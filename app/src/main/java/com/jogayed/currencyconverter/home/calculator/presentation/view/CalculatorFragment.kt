@@ -54,7 +54,7 @@ class CalculatorFragment : BaseFragment() {
         tvCalculatedAmount = requireView().findViewById(R.id.tv_calculated_amount)
         tvTargetCurrencyName = requireView().findViewById(R.id.tv_target_currency_name)
         edtInputAmount = requireView().findViewById(R.id.edt_input_amount)
-        tvBaseCurrencyName = requireView().findViewById(R.id.tv_base_currency_name)
+        tvBaseCurrencyName = requireView().findViewById(R.id.spin_base_currency_name)
 
 
 

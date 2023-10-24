@@ -8,7 +8,7 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/tv_base_currency_name"
+        android:id="@+id/spin_base_currency_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
@@ -25,9 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_base_currency_name"
+        app:layout_constraintBottom_toBottomOf="@+id/spin_base_currency_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_base_currency_name"
+        app:layout_constraintTop_toTopOf="@+id/spin_base_currency_name"
         tools:text="0.60" />
 
     <View

@@ -16,26 +16,32 @@ class CurrencyRatesRepository @Inject constructor(
     private val localDataMapper: RatesLocalDataMapper,
     private val remoteDataMapper: RatesRemoteDataMapper,
 ) : ICurrencyRatesRepository {
-    override suspend fun getLatestRates(shouldRefresh: Boolean): List<CurrencyRateDomainModel> {
-        val cachedList: List<CurrencyRateLocalDataModel> = localDataSource.getLatestRates()
-        if (cachedList.isNotEmpty() && !shouldRefresh) {
-            return localDataMapper.mapList(cachedList)
-        }
+    override suspend fun getLatestRates(
+        baseRate: String,
+        shouldRefresh: Boolean
+    ): List<CurrencyRateDomainModel> {
+        val cachedList: List<CurrencyRateLocalDataModel> = localDataSource.getLatestRates(baseRate)
 
+        return if (cachedList.isNotEmpty() && !shouldRefresh) {
+            localDataMapper.mapList(cachedList)
+        } else {
+            val remoteList = remoteDataSource.getLatestRates(baseRate)
+            if (remoteList.isNotEmpty()) {
+                deleteAllRates()
+                saveLatestRates(baseRate, remoteDataMapper.mapList(remoteList))
+                remoteDataMapper.mapList(remoteList)
+            } else {
+                localDataMapper.mapList(cachedList)
+            }
 
-        val remoteList: List<CurrencyRateRemoteDataModel> = remoteDataSource.getLatestRates()
-        if (remoteList.isNotEmpty()) {
-            deleteAllRates()
-            saveLatestRates(remoteDataMapper.mapList(remoteList))
         }
-        return remoteDataMapper.mapList(remoteList)
     }
 
-    override suspend fun saveLatestRates(rates: List<CurrencyRateDomainModel>) {
-        localDataSource.saveLatestRates(localDataMapper.reverseMapList(rates))
-    }
+    override suspend fun saveLatestRates(baseRate: String, rates: List<CurrencyRateDomainModel>) =
+        localDataSource.saveLatestRates(baseRate, localDataMapper.reverseMapList(rates))
 
-    override suspend fun deleteAllRates() {
+
+    override suspend fun deleteAllRates() =
         localDataSource.deleteAllRates()
-    }
+
 }

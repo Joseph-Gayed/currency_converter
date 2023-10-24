@@ -29,19 +29,21 @@ class RatesViewModel @Inject constructor(
     var selectedCurrencyRate: CurrencyRateUiModel? = null
     var baseCurrencyRate: CurrencyRateUiModel? = null
 
+    var nameOfCurrentBaseCurrency: String = AppConsts.BASE_CURRENCY
+
     fun getRates(shouldRefresh: Boolean) {
         viewModelScope.launch {
             try {
                 _states.emit(DataState.Loading(true, cachedData = _states.value.data()))
 
                 val result = if (shouldRefresh)
-                    refreshRatesListUseCase()
+                    refreshRatesListUseCase(nameOfCurrentBaseCurrency)
                 else
-                    getRatesListUseCase()
+                    getRatesListUseCase(nameOfCurrentBaseCurrency)
 
                 val ratesUiList = uiMapper.mapList(result)
                 baseCurrencyRate = ratesUiList.find {
-                    it.name.equals(AppConsts.BASE_CURRENCY, true)
+                    it.name.equals(nameOfCurrentBaseCurrency, true)
                 }
                 _states.emit(DataState.Success(ratesUiList))
 
@@ -55,5 +57,9 @@ class RatesViewModel @Inject constructor(
         getRates(shouldRefresh = true)
     }
 
+    fun changeBaseRate(newBaseRate:String){
+        this.nameOfCurrentBaseCurrency = newBaseRate
+        getRates(shouldRefresh = true)
+    }
 
 }

@@ -2,6 +2,9 @@ package com.jogayed.currencyconverter.home.rates_list.presentation.view
 
 import android.content.Context
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -18,6 +21,7 @@ import com.jogayed.currencyconverter.home.rates_list.presentation.viewmodel.Rate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
+
 /**
  * A fragment representing a list of Items.
  */
@@ -30,7 +34,7 @@ class CurrencyRatesListFragment : BaseFragment() {
 
     private lateinit var baseCurrencyView: View
     private lateinit var tvBaseCurrencyRate: TextView
-    private lateinit var tvBaseCurrencyName: TextView
+    private lateinit var spinBaseCurrencyName: Spinner
 
 
     private lateinit var rvRates: RecyclerView
@@ -64,7 +68,7 @@ class CurrencyRatesListFragment : BaseFragment() {
     private fun initUi() {
         baseCurrencyView = requireView().findViewById(R.id.view_base_currency)
         tvBaseCurrencyRate = requireView().findViewById(R.id.tv_base_currency_rate)
-        tvBaseCurrencyName = requireView().findViewById(R.id.tv_base_currency_name)
+        spinBaseCurrencyName = requireView().findViewById(R.id.spin_base_currency_name)
 
         loadingView = requireView().findViewById(R.id.view_loading)
         errorView = requireView().findViewById(R.id.view_error)
@@ -82,6 +86,8 @@ class CurrencyRatesListFragment : BaseFragment() {
         }
     }
 
+
+
     override fun subscribe() {
         super.subscribe()
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -98,8 +104,7 @@ class CurrencyRatesListFragment : BaseFragment() {
         loadingView.isVisible = state is DataState.Loading && state.data() == null
         errorView.isVisible = state is DataState.Error
         emptyView.isVisible = state.isEmptyList()
-        if (state is DataState.Success)
-            handleSuccessState(state.data)
+        if (state is DataState.Success) handleSuccessState(state.data)
         else if (state is DataState.Error) {
             tvErrorMessage.text = state.throwable.message
             state.throwable.printStackTrace()
@@ -110,8 +115,38 @@ class CurrencyRatesListFragment : BaseFragment() {
         if (data.isNotEmpty()) {
             ratesAdapter.setData(data)
             tvBaseCurrencyRate.text = viewModel.baseCurrencyRate?.rate.toString()
-            tvBaseCurrencyName.text = viewModel.baseCurrencyRate?.name.toString()
 
+            val currenciesNames = data.map {
+                it.name
+            }
+
+            initCurrencyBaseRatesSpinner(currenciesNames)
+
+        }
+    }
+    private fun initCurrencyBaseRatesSpinner(currenciesNames: List<String>) {
+        with(spinBaseCurrencyName) {
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>, view: View?, position: Int, id: Long
+                ) {
+                    val newBaseRate = parent.getItemAtPosition(position).toString()
+                    if (viewModel.nameOfCurrentBaseCurrency != newBaseRate) {
+                        viewModel.changeBaseRate(newBaseRate)
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    return;
+                }
+            }
+            val spinnerAdapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                currenciesNames
+            )
+            adapter = spinnerAdapter
+            setSelection(spinnerAdapter.getPosition(viewModel.nameOfCurrentBaseCurrency))
         }
     }
 

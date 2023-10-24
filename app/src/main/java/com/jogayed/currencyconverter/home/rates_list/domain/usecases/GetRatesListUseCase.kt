@@ -6,8 +6,7 @@ import com.jogayed.currencyconverter.home.rates_list.domain.repository.ICurrency
 import javax.inject.Inject
 
 class GetRatesListUseCase @Inject constructor(private val repository: ICurrencyRatesRepository) :
-    ISuspendableUseCase.WithoutParams<List<CurrencyRateDomainModel>> {
-    override suspend fun invoke(): List<CurrencyRateDomainModel> {
-        return repository.getLatestRates()
-    }
+    ISuspendableUseCase.WithParams<String, List<CurrencyRateDomainModel>> {
+    override suspend fun invoke(input: String): List<CurrencyRateDomainModel> =
+        repository.getLatestRates(input)
 }

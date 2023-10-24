@@ -34,7 +34,7 @@ class CurrencyRatesListAdapter(
 
     inner class ViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
-        val tvCurrencyName: TextView = view.findViewById(R.id.tv_base_currency_name)
+        val tvCurrencyName: TextView = view.findViewById(R.id.spin_base_currency_name)
         val tvCurrencyRate: TextView = view.findViewById(R.id.tv_currency_rate)
     }
 }
